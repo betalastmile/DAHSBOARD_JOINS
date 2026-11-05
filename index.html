@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<script>(function(){try{var t=localStorage.getItem('temaBET');if(!t)t=(matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="app-version" content="DASH.REF.1.0">
+<title>Dashboard de Referidos - BET</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bk:#111;--lm:#93d502;--ld:#4d6b00;--ls:#f1f7de;--bg:#f1f2ee;--ln:#d9dccf;--tx:#151515;--mu:#5a5e52;--cd:#fff}
+[data-theme=dark]{--bg:#0d0e0b;--ln:#2c2f25;--tx:#ececE4;--mu:#a3a899;--cd:#181a14;--ls:#23290f}
+body{font-family:Inter,'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--tx);padding:1rem;font-size:14px}
+.w{max-width:1500px;margin:0 auto}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:linear-gradient(100deg,#111,#4d6b00);border-bottom:4px solid var(--lm);color:#fff;padding:1rem 1.5rem;border-radius:12px 12px 0 0}
+.hd h1{font-size:1.2rem;letter-spacing:.08em;text-transform:uppercase}.hd p{font-size:.72rem;opacity:.8;letter-spacing:.1em;text-transform:uppercase}
+button,select,input{font:inherit;color:var(--tx)}
+button{cursor:pointer;border:0;border-radius:8px;padding:.5rem .9rem;font-weight:700;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;background:linear-gradient(90deg,#111,#4d6b00);color:#fff;border-bottom:3px solid var(--lm)}
+button.g{background:var(--cd);color:var(--tx);border:1px solid var(--ln)}button:disabled{opacity:.55;cursor:not-allowed}
+input,select{background:var(--cd);border:1px solid var(--ln);border-radius:8px;padding:.45rem .6rem}
+.card{background:var(--cd);border:1px solid var(--ln);border-radius:10px;padding:1rem;margin-top:1rem}
+.card h4{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.7rem;border-left:4px solid var(--lm);padding-left:.6rem}
+.card h4 small,.mu{color:var(--mu);font-weight:400}
+.fl{display:flex;gap:.6rem;flex-wrap:wrap;align-items:end}.fl label{display:flex;flex-direction:column;font-size:.65rem;font-weight:700;color:var(--mu);text-transform:uppercase;gap:.2rem}
+.tabs{display:flex;gap:.2rem;overflow-x:auto;border-bottom:2px solid var(--ln);margin-top:1rem}
+.tabs button{background:none;color:var(--mu);border:0;border-bottom:4px solid transparent;border-radius:0;padding:.7rem 1.1rem;white-space:nowrap}
+.tabs button.on{color:var(--tx);border-bottom-color:var(--lm);background:var(--ls)}
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin-top:1rem}
+.kp div{background:var(--cd);border:1px solid var(--ln);border-left:4px solid var(--lm);border-radius:10px;padding:.7rem .9rem}
+.kp b{display:block;font-size:1.5rem}.kp span{font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mu)}
+.gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1rem}
+.cv{height:240px;position:relative}.sc{max-height:330px;overflow:auto}
+.rw{display:grid;grid-template-columns:1fr auto 52px;gap:.1rem .6rem;padding:.35rem 0;border-bottom:1px solid var(--ln);font-size:.8rem}
+.rw em{font-style:normal;color:var(--mu);text-align:right}.rw .bar{grid-column:1/4}
+.bar{height:5px;background:var(--ln);border-radius:3px}.bar i{display:block;height:100%;background:var(--lm);border-radius:3px}
+.tw{overflow:auto;max-height:480px}
+table{border-collapse:collapse;width:100%;font-size:.78rem}
+th,td{padding:.45rem .6rem;border-bottom:1px solid var(--ln);text-align:right;white-space:nowrap}
+.l{text-align:left}
+th{position:sticky;top:0;background:var(--cd);cursor:pointer;font-size:.65rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mu)}
+tr.s td{background:var(--ls);font-weight:700}tbody tr:hover td{background:var(--ls)}
+.hm{display:grid;grid-template-columns:38px repeat(24,1fr);gap:2px;font-size:.62rem;text-align:center;overflow:auto;min-width:640px}
+.hm u{text-decoration:none;border-radius:3px;min-height:22px;line-height:22px;background:var(--ln)}.hm s{text-decoration:none;color:var(--mu)}.hm span{text-align:left;color:var(--mu);line-height:22px}
+.al{background:#fef9c3;border:1px solid #fde047;color:#854d0e;border-radius:8px;padding:.6rem .9rem;margin-top:.7rem;font-size:.8rem}
+.ins{background:var(--ls);border-left:4px solid var(--lm);border-radius:8px;padding:.55rem .8rem;margin-top:.5rem;font-size:.82rem}
+.tg{display:inline-block;padding:1px 8px;border-radius:20px;font-size:.68rem;font-weight:700;background:var(--ln);color:var(--mu)}.tg.ok{background:#dcfce7;color:#166534}
+.dg table{width:auto;min-width:320px;margin:6px 0 14px}.dg td{text-align:left;padding:.25rem .8rem .25rem 0}.dg h4{margin-top:.6rem;font-size:.7rem;text-transform:uppercase;color:var(--mu)}.bad{color:#dc2626;font-weight:700}
+.pdf .sc,.pdf .tw{max-height:none!important;overflow:visible!important}
+.pdf .sc .rw:nth-child(n+26),.pdf .tw tbody tr:nth-child(n+26){display:none}
+.pdf th{position:static}.pdf .hm{min-width:0}.pdf [style*="overflow:auto"]{overflow:visible!important}
+</style>
+</head>
+<body>
+<div class="w">
+<div class="hd"><div><h1>Dashboard de Referidos</h1><p id="upd">Beta Last Mile · Referidores · Conversión · Análisis</p></div>
+<div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="g" onclick="tema()">🌓 Tema</button><button class="g" onclick="csv()">⬇ CSV</button><button class="g" id="bsrc" onclick="cargar()">🔄 Actualizar</button></div></div>
+<div class="card" id="pan" style="margin-top:0;border-radius:0 0 10px 10px"><span id="msg" class="mu">Conectando con Google Sheets…</span></div>
+<div id="app" hidden>
+<div class="card"><div class="fl">
+ <label>Desde<input type="date" id="fd" onchange="R()"></label><label>Hasta<input type="date" id="fh" onchange="R()"></label>
+ <label>Tipo<select id="ft" onchange="R()"></select></label><label>Estatus<select id="fe" onchange="R()"></select></label>
+ <label>Sucursal<select id="fs" onchange="R()"></select></label><label>Puesto<select id="fu" onchange="R()"></select></label>
+ <label>Pago<select id="fp" onchange="R()"><option value="">Todos</option><option value="SI">Pagados</option><option value="NO">No pagados</option></select></label>
+ <label>Quién refiere<input id="fr" list="lr" placeholder="Escribe o elige…" autocomplete="off" oninput="R()"><datalist id="lr"></datalist></label>
+ <label>Buscar<input id="fb" placeholder="Referido, folio…" oninput="R()"></label>
+ <button class="g" onclick="limpiar()">Limpiar</button><button class="pb" onclick="pdf(false)">📄 PDF · esta vista</button><button class="pb" onclick="pdf(true)">📄 PDF · todo</button></div><div id="al"></div></div>
+<div class="tabs" id="tb"></div>
+<div id="v"></div>
+</div>
+</div>
+<script>
+const GOOGLE_WEBAPP="https://script.google.com/macros/s/AKfycby2O9YEPmzaE9B1xE7CaE6oo83gb8giEhi_RFEdUyAjbTB9qYTsSmPaK7gOvwALv7S4/exec";
+const DEMO=/[?&]demo=1/.test(location.search),NA='(SIN DATO)',$=i=>document.getElementById(i),pad=n=>String(n).padStart(2,'0');
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm=s=>String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().replace(/[^A-Z0-9]+/g,' ').trim();
+const DIAS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],HL=[...Array(24).keys()].map(h=>h+'h');
+const NOM={refiere:'Quién refiere',sucursal:'Sucursal',puesto:'Puesto',estatus:'Estatus',tipo:'Tipo'};
+let ALL=[],FIL=[],DIAG=null,AV='',TAB='res',SORT={},SEL=null,CH={};
+const tema=()=>{const t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;try{localStorage.setItem('temaBET',t)}catch(e){}};
+const msg=t=>$('msg').textContent=t;
+function jsonp(params,ms=60000){return new Promise((ok,ko)=>{const cb='jsonpDash_'+Date.now()+'_'+Math.floor(Math.random()*1000),s=document.createElement('script'),lim=()=>{clearTimeout(t);delete window[cb];s.remove()},t=setTimeout(()=>{lim();ko(new Error('Tiempo de espera agotado.'))},ms);
+ window[cb]=d=>{lim();ok(d)};s.onerror=()=>{lim();ko(new Error('No se pudo conectar con el servidor.'))};s.src=GOOGLE_WEBAPP+'?'+params+'&callback='+cb;document.body.appendChild(s)})}
+function parseFecha(s){if(!s)return null;let m=String(s).match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/);if(m)return new Date(+m[1],+m[2]-1,+m[3],+(m[4]||0),+(m[5]||0));
+ m=String(s).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);if(m)return new Date(+m[3],+m[2]-1,+m[1],+(m[4]||0),+(m[5]||0));const d=new Date(s);return isNaN(d)?null:d}
+const dk=t=>t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate()),mk=t=>t.getFullYear()+'-'+pad(t.getMonth()+1);
+function demoRows(){const suc=['CDMX Norte','Guadalajara','Monterrey','Puebla','Querétaro'],pue=['Repartidor','Auxiliar de almacén','Chofer','Supervisor'],est=['Nuevo','En proceso','Contratado','Descartado'],nom=['Ana López','Luis Pérez','María Ruiz','Jorge Díaz','Sofía Vega','Carlos Mena'],r=[];
+ for(let i=0;i<125;i++){const d=new Date();d.setDate(d.getDate()-Math.floor(Math.random()*40));const car=Math.random()<.2,sf=i>=120,p=(sf||(i%3===0&&!car));
+ r.push({folio:sf?'SIN FOLIO':'FOL-'+String(1000+i),fecha:ymd(d)+' 10:00',estatus:est[i%4],refiere:nom[i%6],referido:nom[(i*3+1)%6]+' '+i,sucursal:car?'CARTERA':suc[i%5],puesto:pue[i%4],tipo:sf?'SIN FOLIO':(car?'CARTERA':'VACANTE'),estado:'—',ciudad:'—',pagado:p?'SI':'NO',pago_valor:p?'PAGADO':''})}return r}
+const ymd=d=>d?dk(d):'';
+async function cargar(auto){if(!auto){$('pan').hidden=false;msg('Cargando datos…')}$('bsrc').disabled=true;
+ try{let rows;if(DEMO)rows=demoRows();else{const d=await jsonp('action=dashboard_referidos');if(d.status!=='success')throw new Error(d.mensaje||'El servidor no devolvió datos (¿ya publicaste la nueva versión del script?).');rows=d.rows||[];AV=d.pago_aviso||'';DIAG=d.diag||null}
+ setData(rows)}catch(e){if(!auto||$('app').hidden){$('pan').hidden=false;msg('❌ '+e.message)}}finally{$('bsrc').disabled=false}}
+function setData(rows){const U=v=>String(v==null?'':v).trim().toUpperCase()||NA,cn={};
+ ALL=rows.map(r=>{const o={...r,t:parseFecha(r.fecha)};for(const k of['refiere','referido','sucursal','puesto','estatus','tipo','estado','ciudad'])o[k]=U(r[k]);
+  const rk=norm(r.refiere)||NA;o.refiere=cn[rk]||(cn[rk]=o.refiere);o.rn=norm(r.referido);o.con=o.estatus.includes('CONTRAT');o.pg=r.pagado==='SI';return o});
+ const f=(id,k,l)=>{const o=$(id).value,v=[...new Set(ALL.map(r=>r[k]))].sort((a,b)=>a.localeCompare(b,'es'));$(id).innerHTML=`<option value="">${l}</option>`+v.map(x=>`<option>${esc(x)}</option>`).join('');$(id).value=o};
+ f('ft','tipo','Todos');f('fe','estatus','Todos');f('fs','sucursal','Todas');f('fu','puesto','Todos');
+ $('lr').innerHTML=[...new Set(ALL.map(r=>r.refiere))].sort((a,b)=>a.localeCompare(b,'es')).map(v=>`<option value="${esc(v)}">`).join('');
+ $('pan').hidden=true;$('app').hidden=false;$('upd').textContent=(DEMO?'🧪 DATOS DE EJEMPLO · ':'')+'Actualizado: '+new Date().toLocaleString('es-MX');
+ $('tb').innerHTML=[['res','Resumen'],['pat','🔎 Análisis'],['ref','Referidores'],['sp','Sucursal · Puesto'],['pag','Pagos'],['det','Detalle']].map(([k,l])=>`<button data-t="${k}" onclick="TAB='${k}';R()">${l}</button>`).join('');R()}
+function limpiar(){['fd','fh','ft','fe','fs','fu','fp','fr','fb'].forEach(i=>$(i).value='');SEL=null;R()}
+function getD(){const d=$('fd').value,h=$('fh').value,q=norm($('fb').value),rf=norm($('fr').value),pg=$('fp').value;
+ return ALL.filter(r=>{const f=r.t?dk(r.t):'';return(!d||(f&&f>=d))&&(!h||(f&&f<=h))&&(!$('ft').value||r.tipo===$('ft').value)&&(!$('fe').value||r.estatus===$('fe').value)&&(!$('fs').value||r.sucursal===$('fs').value)&&(!$('fu').value||r.puesto===$('fu').value)&&(pg!=='SI'||r.pg)&&(pg!=='NO'||!r.pg)&&(!rf||norm(r.refiere).includes(rf))&&(!q||norm([r.folio,r.refiere,r.referido,r.sucursal,r.puesto,r.ciudad,r.estatus].join(' ')).includes(q))})}
+const grp=(a,f)=>{const m=new Map();for(const x of a){const k=f(x);(m.get(k)||m.set(k,[]).get(k)).push(x)}return m};
+const pc=(a,b)=>b?(a*100/b).toFixed(1)+'%':'—',hh=h=>h==null?'—':pad(h)+':00',fdt=t=>t?`${pad(t.getDate())}/${pad(t.getMonth()+1)} ${pad(t.getHours())}:${pad(t.getMinutes())}`:'—';
+function dom(a,k){const m=new Map();for(const r of a)m.set(r[k],(m.get(r[k])||0)+1);return[...m].sort((x,y)=>y[1]-x[1])[0]||[NA,0]}
+function stats(l){const hr=Array(24).fill(0),wd=Array(7).fill(0),dm=Array(31).fill(0),dy=new Map();let f=null,la=null,con=0,pg=0;
+ for(const r of l){if(r.con)con++;if(r.pg)pg++;if(r.t){hr[r.t.getHours()]++;wd[(r.t.getDay()+6)%7]++;dm[r.t.getDate()-1]++;const k=dk(r.t);dy.set(k,(dy.get(k)||0)+1);if(!f||r.t<f)f=r.t;if(!la||r.t>la)la=r.t}}
+ const mx=Math.max(...hr);return{n:l.length,con,pg,hr,wd,dm,dy,days:dy.size,maxd:Math.max(0,...dy.values()),f,la,peak:mx?hr.indexOf(mx):null}}
+function ch(id,cfg){if(CH[id])CH[id].destroy();const c=$(id);if(c)CH[id]=new Chart(c,cfg)}
+const OP=(x)=>({animation:false,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{precision:0}}},...x});
+const bar=(id,lb,d)=>ch(id,{type:'bar',data:{labels:lb,datasets:[{data:d,backgroundColor:'#93d502',borderRadius:4}]},options:OP()});
+function brk(l,k,t){const g=[...grp(l,r=>r[k])].map(([a,b])=>[a,b.length]).sort((a,b)=>b[1]-a[1]),m=g[0]?g[0][1]:1;
+ return`<div class="card"><h4>${t} <small>(${g.length})</small></h4><div class="sc">${g.map(([a,n])=>`<div class="rw"><span>${esc(a)}</span><b>${n}</b><em>${(n*100/l.length).toFixed(1)}%</em><div class="bar"><i style="width:${n*100/m}%"></i></div></div>`).join('')||'<p class="mu">Sin datos</p>'}</div></div>`}
+const tb=(h,lf,rows)=>`<div class="tw"><table><thead><tr>${h.map((x,i)=>`<th${lf.includes(i)?' class="l"':''}>${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((x,i)=>`<td${lf.includes(i)?' class="l"':''}>${x}</td>`).join('')}</tr>`).join('')||`<tr><td class="l" colspan="${h.length}">Sin hallazgos</td></tr>`}</tbody></table></div>`;
+function mtx(l,rk,ck,t,max,mc){const cs=[...grp(l,r=>r[ck])].sort((a,b)=>b[1].length-a[1].length).slice(0,mc||8).map(x=>x[0]),rs=[...grp(l,r=>r[rk])].sort((a,b)=>b[1].length-a[1].length).slice(0,max);
+ return`<div class="card"><h4>${t}</h4>${tb([NOM[rk],...cs.map(esc),'Total'],[0],rs.map(([n,a])=>[esc(n),...cs.map(c=>a.filter(r=>r[ck]===c).length||''),'<b>'+a.length+'</b>']))}</div>`}
+function heat(l){const m=Array.from({length:7},()=>Array(24).fill(0));let mx=1;for(const r of l)if(r.t){const v=++m[(r.t.getDay()+6)%7][r.t.getHours()];if(v>mx)mx=v}
+ return`<div class="card"><h4>Mapa de calor · día de la semana × hora</h4><div style="overflow:auto"><div class="hm"><span></span>${HL.map(h=>`<s>${h}</s>`).join('')}${DIAS.map((d,i)=>`<span>${d}</span>`+m[i].map((v,h)=>`<u style="background:rgba(147,213,2,${v?(.15+.85*v/mx).toFixed(2):0})" title="${d} ${h}:00 → ${v}">${v||''}</u>`).join('')).join('')}</div></div></div>`}
+const kp=a=>`<div class="kp">${a.map(([v,l])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}</div>`;
+const pgT=r=>r.pg?`<span class="tg ok">${esc(r.pago_valor||'PAGADO')}</span>`:'<span class="tg">NO PAGADO</span>';
+const CO=[['folio','Folio'],['fecha','Fecha'],['refiere','Quién refiere'],['referido','Referido'],['tipo','Tipo'],['estatus','Estatus'],['pg','Pago'],['sucursal','Sucursal'],['puesto','Puesto'],['estado','Estado'],['ciudad','Ciudad']];
+const tbl=(a,n)=>tb(CO.map(c=>c[1]),CO.map((_,i)=>i),[...a].sort((x,y)=>(y.t||0)-(x.t||0)).slice(0,n).map(r=>CO.map(([k])=>k==='pg'?pgT(r):k==='folio'?'<b>'+esc(r[k])+'</b>':esc(r[k]))));
+function R(){document.querySelectorAll('#tb button').forEach(b=>b.classList.toggle('on',b.dataset.t===TAB));const l=getD(),s=stats(l);FIL=l;let w='';
+ if(AV)w+=`<div class="al">⚠ ${esc(AV)}</div>`;
+ if(!l.some(r=>r.t))w+='<div class="al">⚠️ No hay fechas válidas: sin ellas no hay análisis por día ni por hora.</div>';else if(!l.some(r=>r.t&&(r.t.getHours()||r.t.getMinutes())))w+='<div class="al">⚠️ Las fechas no traen hora: el análisis por hora no es confiable.</div>';
+ $('al').innerHTML=w;
+ if(!l.length){$('v').innerHTML='<div class="card">Sin referidos con esos filtros.</div>';return}
+ ({res,pat,ref:refs,sp,pag,det})[TAB](l,s)}
+function res(l,s){const dias=[...s.dy].sort((a,b)=>a[0]<b[0]?-1:1),wk=new Date();wk.setDate(wk.getDate()-7);const rf=new Set(l.map(r=>r.refiere)).size,ma=dias.map((_,i)=>{const z=dias.slice(Math.max(0,i-6),i+1);return+(z.reduce((a,b)=>a+b[1],0)/z.length).toFixed(2)});
+ $('v').innerHTML=kp([[l.length,'Referidos'],[l.filter(r=>r.tipo==='VACANTE').length,'A vacante'],[l.filter(r=>r.tipo==='CARTERA').length,'A cartera'],[l.filter(r=>r.tipo==='SIN FOLIO').length,'Pagados sin folio'],[rf,'Referidores únicos'],[(l.length/rf).toFixed(1),'Referidos por referidor'],[l.filter(r=>r.t&&r.t>=wk).length,'Últimos 7 días'],[s.con+' ('+pc(s.con,l.length)+')','Contratados'],[s.pg+' ('+pc(s.pg,l.length)+')','💰 Pagados'],[l.length-s.pg,'Por pagar'],[hh(s.peak),'Hora pico'],[s.days?(l.length/s.days).toFixed(1):'—','Referidos por día activo']])+
+ `<div class="gr"><div class="card"><h4>Referidos por hora</h4><div class="cv"><canvas id="c1"></canvas></div></div><div class="card"><h4>Por día de la semana</h4><div class="cv"><canvas id="c2"></canvas></div></div></div><div class="card"><h4>Tendencia diaria <small>· línea = promedio móvil 7 días</small></h4><div class="cv"><canvas id="c3"></canvas></div></div>`+heat(l)+
+ `<div class="gr">${brk(l,'estatus','Por estatus')}${brk(l,'sucursal','Por sucursal')}${brk(l,'puesto','Por puesto')}${brk(l,'refiere','Top referidores')}</div>`;
+ bar('c1',HL,s.hr);bar('c2',DIAS,s.wd);ch('c3',{data:{labels:dias.map(d=>d[0]),datasets:[{type:'bar',data:dias.map(d=>d[1]),backgroundColor:'rgba(147,213,2,.55)',borderRadius:3},{type:'line',data:ma,borderColor:'#4d6b00',tension:.3,pointRadius:0}]},options:OP()})}
+function pat(l,s){const g=[...grp(l,r=>r.refiere)].filter(([n])=>n!==NA).map(([n,a])=>({n,a,s:stats(a)})),N=g.length,gc=l.length?s.con/l.length:0,so=[...g].sort((a,b)=>b.s.n-a.s.n),tp=Math.max(1,Math.ceil(N*.1)),tot=g.reduce((x,o)=>x+o.s.n,0)||1,tpN=so.slice(0,tp).reduce((x,o)=>x+o.s.n,0);
+ const one=g.filter(o=>o.s.n===1).length,pw=g.filter(o=>o.s.n>=5).length,bk=[1,2,3,4,5].map(i=>g.filter(o=>i<5?o.s.n===i:o.s.n>=5).length);
+ const q3=g.filter(o=>o.s.n>=3).map(o=>({...o,cv:o.s.con/o.s.n})).sort((a,b)=>b.s.n-a.s.n);
+ const af=q3.map(o=>({o,su:dom(o.a,'sucursal'),pu:dom(o.a,'puesto')})).filter(x=>x.su[1]/x.o.s.n>=.7||x.pu[1]/x.o.s.n>=.7);
+ const bu=[];for(const o of g)for(const[d,c]of o.s.dy)if(c>=3)bu.push([o.n,d,c]);bu.sort((a,b)=>b[2]-a[2]);
+ const dv=[...s.dy.values()],mu=dv.reduce((a,b)=>a+b,0)/(dv.length||1),sd=Math.sqrt(dv.reduce((a,b)=>a+(b-mu)**2,0)/(dv.length||1)),sp=[...s.dy].filter(([,c])=>c>mu+2*sd&&c>=3).sort((a,b)=>b[1]-a[1]).slice(0,8);
+ const dp=[...grp(l.filter(r=>r.rn),r=>r.rn)].filter(([,a])=>a.length>1).map(([,a])=>({n:a[0].referido,c:a.length,rf:new Set(a.map(r=>r.refiere)).size,f:a.map(r=>r.folio).join(', ')})).sort((a,b)=>b.rf-a.rf||b.c-a.c);
+ const fm={};for(const o of g){const m=o.a.filter(r=>r.t).map(r=>mk(r.t)).sort();if(m.length)fm[o.n]=m[0]}
+ const ms=[...new Set(l.filter(r=>r.t).map(r=>mk(r.t)))].sort(),nw=ms.map(m=>g.filter(o=>fm[o.n]===m).length),rc=ms.map(m=>g.filter(o=>fm[o.n]<m&&o.a.some(r=>r.t&&mk(r.t)===m)).length);
+ const cv=k=>[...grp(l,r=>r[k])].filter(([n,a])=>n!==NA&&a.length>=5).map(([n,a])=>[n,a.filter(r=>r.con).length/a.length,a.length]).sort((a,b)=>b[1]-a[1]);
+ const qa=s.dm.slice(0,15).reduce((a,b)=>a+b,0),qt=s.dm.reduce((a,b)=>a+b,0),wi=s.wd.indexOf(Math.max(...s.wd)),pend=l.filter(r=>r.con&&!r.pg).length,I=[];
+ I.push(`<b>Concentración:</b> el 10% de los referidores (${tp} de ${N}) genera el ${(tpN*100/tot).toFixed(0)}% de los referidos.`);
+ I.push(`<b>Recurrencia:</b> ${one} referidores (${pc(one,N)}) refirió una sola vez; ${N-one} repiten y ${pw} refieren 5 o más.`);
+ if(q3.length)I.push(`<b>Calidad:</b> ${q3.filter(o=>o.s.con===0).length} de ${q3.length} referidores con 3+ referidos no tienen ningún contratado; ${q3.filter(o=>o.cv>=gc+.15).length} superan la conversión global (${pc(s.con,l.length)}) por 15 pts o más.`);
+ for(const[k,t]of[['sucursal','sucursal'],['puesto','puesto']]){const c=cv(k);if(c.length>1)I.push(`<b>Conversión por ${t}</b> (mín. 5 referidos): mejor ${esc(c[0][0])} (${(c[0][1]*100).toFixed(0)}%), más baja ${esc(c[c.length-1][0])} (${(c[c.length-1][1]*100).toFixed(0)}%).`)}
+ if(qt)I.push(`<b>Calendario:</b> ${pc(qa,qt)} de los referidos entran del día 1 al 15 del mes; el día de la semana más fuerte es ${DIAS[wi]} (${pc(s.wd[wi],qt)}).`);
+ if(af.length)I.push(`<b>Afinidad:</b> ${af.length} referidores con 3+ referidos mandan al menos 70% a una misma sucursal o puesto.`);
+ if(bu.length)I.push(`<b>Ráfagas:</b> ${bu.length} casos de un referidor con 3+ referidos el mismo día (máx. ${bu[0][2]}, ${esc(bu[0][0])}).`);
+ if(dp.length)I.push(`<b>Repetidos:</b> ${dp.length} nombres de referido aparecen más de una vez${dp.some(x=>x.rf>1)?' (algunos por distintos referidores)':''}.`);
+ if(pend)I.push(`<b>Pagos:</b> ${pend} referidos contratados aún sin pago.`);
+ if(QT)QR=ask(QT,l);$('v').innerHTML=qaCard()+`<div class="card"><h4>Hallazgos automáticos <small>· con los filtros actuales</small></h4>${I.map(x=>`<div class="ins">${x}</div>`).join('')}</div>`+
+ kp([[N,'Referidores'],[pc(one,N),'Refirieron 1 sola vez'],[pw,'Referidores con 5+'],[pc(tpN,tot),'Aporta el top 10%'],[pc(s.con,l.length),'Conversión global'],[bu.length,'Ráfagas (3+ en un día)'],[dp.length,'Referidos repetidos']])+
+ `<div class="gr"><div class="card"><h4>Referidores según cuántas veces refieren</h4><div class="cv"><canvas id="p1"></canvas></div></div><div class="card"><h4>Volumen vs conversión <small>· referidores con 3+</small></h4><div class="cv"><canvas id="p2"></canvas></div></div><div class="card"><h4>Referidores nuevos vs recurrentes por mes <small>· nuevo = 1ª vez en el periodo visible</small></h4><div class="cv"><canvas id="p3"></canvas></div></div><div class="card"><h4>Referidos por día del mes <small>· ¿efecto quincena?</small></h4><div class="cv"><canvas id="p4"></canvas></div></div></div>`+heat(l)+
+ `<div class="card"><h4>Calidad de referidores <small>· 3+ referidos, vs conversión global ${pc(s.con,l.length)}</small></h4>${tb(['Referidor','Referidos','Contratados','% conv.','vs global','Pagados','Señal'],[0,6],q3.slice(0,25).map(o=>[esc(o.n),'<b>'+o.s.n+'</b>',o.s.con,(o.cv*100).toFixed(0)+'%',((o.cv-gc)*100>=0?'+':'')+((o.cv-gc)*100).toFixed(0)+' pts',o.s.pg,o.s.con===0?'🔴 Volumen sin contratación':o.cv>=gc+.15?'🟢 Alta conversión':'']))}</div>`+
+ `<div class="card"><h4>Afinidad · referidores que concentran sucursal o puesto <small>(≥70%)</small></h4>${tb(['Referidor','Referidos','Sucursal dominante','Puesto dominante'],[0,2,3],af.slice(0,25).map(x=>[esc(x.o.n),'<b>'+x.o.s.n+'</b>',esc(x.su[0])+' ('+x.su[1]+')',esc(x.pu[0])+' ('+x.pu[1]+')']))}</div>`+
+ `<div class="gr"><div class="card"><h4>Ráfagas · 3+ referidos del mismo referidor en un día</h4>${tb(['Referidor','Día','Referidos'],[0,1],bu.slice(0,15).map(b=>[esc(b[0]),b[1],'<b>'+b[2]+'</b>']))}</div><div class="card"><h4>Días con pico inusual <small>(promedio ${mu.toFixed(1)}/día)</small></h4>${tb(['Día','Referidos'],[0],sp.map(d=>[d[0],'<b>'+d[1]+'</b>']))}</div></div>`+
+ `<div class="card"><h4>Referidos repetidos <small>· mismo nombre más de una vez</small></h4>${tb(['Referido','Veces','Referidores distintos','Folios'],[0,3],dp.slice(0,20).map(d=>[esc(d.n),'<b>'+d.c+'</b>',d.rf>1?'<span class="bad">'+d.rf+'</span>':d.rf,esc(d.f)]))}</div>`+mtx(l,'sucursal','puesto','Sucursal × Puesto (dónde se concentran los referidos)',20,8);
+ bar('p1',['1 vez','2','3','4','5 o más'],bk);
+ ch('p2',{type:'scatter',data:{datasets:[{data:q3.map(o=>({x:o.s.n,y:+(o.cv*100).toFixed(0)})),backgroundColor:'#4d6b00'}]},options:OP({scales:{x:{title:{display:true,text:'Referidos'},ticks:{precision:0}},y:{title:{display:true,text:'% contratados'},min:0,max:100}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>q3[c.dataIndex].n+': '+c.raw.x+' ref · '+c.raw.y+'%'}}}})});
+ ch('p3',{type:'bar',data:{labels:ms,datasets:[{label:'Nuevos',data:nw,backgroundColor:'#93d502'},{label:'Recurrentes',data:rc,backgroundColor:'#4d6b00'}]},options:OP({plugins:{legend:{display:true}},scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true,ticks:{precision:0}}}})});
+ bar('p4',s.dm.map((_,i)=>i+1),s.dm)}
+let QT='',QR='';
+const QS=['¿Quién es la persona que más ha referido?','¿Quiénes son los 5 referidores con más contratados?','¿Quién tiene mejor conversión?','¿Qué sucursal tiene más referidos?','¿Qué puesto convierte mejor?','¿Qué día de la semana se refiere más?','¿Cuántos contratados siguen sin pago?','¿Hay referidos repetidos?','¿Cuántos referidores refirieron una sola vez?'];
+function qaCard(){return`<div class="card"><h4>Pregúntale a los datos <small>· responde con los filtros actuales</small></h4><div class="fl"><input id="qi" style="flex:1;min-width:260px" placeholder="Ej: ¿Quién es la persona que más ha referido?" value="${esc(QT)}" onkeydown="if(event.key==='Enter')qa()"><button onclick="qa()">Preguntar</button></div><div style="margin-top:.6rem;display:flex;gap:.4rem;flex-wrap:wrap">${QS.map(x=>`<button class="g" style="text-transform:none;font-weight:500" onclick="document.getElementById('qi').value=this.textContent;qa()">${esc(x)}</button>`).join('')}</div><div id="qo">${QR}</div></div>`}
+function qa(){const q=document.getElementById('qi').value.trim(),o=document.getElementById('qo');QT=q;
+ if(!q){QR='';o.innerHTML='';return}QR=ask(q,getD());o.innerHTML=QR}
+function ask(q,l){const A=h=>`<div class="ins">${h}</div>`;if(!l.length)return A('No hay referidos con los filtros actuales.');
+ const N=' '+norm(q)+' ',has=(...w)=>w.some(x=>N.includes(x)),s=stats(l),lst=r=>'<ol style="margin:.3rem 0 0 1.2rem">'+r.map(x=>'<li>'+x+'</li>').join('')+'</ol>',
+ g=[...grp(l,r=>r.refiere)].filter(([x])=>x!==NA).map(([x,a])=>({n:x,a,s:stats(a)})),m=N.match(/\b(\d{1,2})\b/),pl=has(' QUIENES ',' CUALES ',' TOP ',' RANKING '),k=m?+m[1]:(pl?5:1),sg=has(' MENOS ',' MENOR ',' PEOR ')?-1:1,w=sg>0?'más':'menos',
+ top=(a,f)=>[...a].sort((x,y)=>sg*(f(y)-f(x))).slice(0,k),fr=o=>`${esc(o.n)} — ${o.s.n} referidos, ${o.s.con} contratados (${pc(o.s.con,o.s.n)}), ${o.s.pg} pagados`,cvq=has('CONVERS','CONVIERT','EFECTIV','CALIDAD');
+ const nm=g.filter(o=>{const t=norm(o.n).split(' ').filter(x=>x.length>2);return t.length&&t.every(x=>N.includes(x))}).sort((a,b)=>b.n.length-a.n.length)[0];
+ if(nm){const a=nm.a,su=dom(a,'sucursal'),pu=dom(a,'puesto');return A(`<b>${esc(nm.n)}</b>: ${nm.s.n} referidos, ${nm.s.con} contratados (${pc(nm.s.con,nm.s.n)}), ${nm.s.pg} pagados y ${a.filter(r=>r.con&&!r.pg).length} contratados sin pago. Sucursal principal: ${esc(su[0])} (${su[1]}); puesto principal: ${esc(pu[0])} (${pu[1]}). Primer referido ${fdt(nm.s.f)}, último ${fdt(nm.s.la)}.`+lst([...a].sort((x,y)=>(y.t||0)-(x.t||0)).slice(0,10).map(r=>`${esc(r.referido)} · ${esc(r.estatus)} · ${esc(r.puesto)} · ${esc(r.sucursal)}`)))}
+ if(has('PENDIENTE','SIN PAGO','POR PAGAR','NO PAGAD','SIGUEN SIN')){const p=l.filter(r=>r.con&&!r.pg),pr=[...grp(p,r=>r.refiere)].sort((a,b)=>b[1].length-a[1].length).slice(0,5);return A(`<b>${p.length}</b> referidos contratados siguen sin pago.`+(p.length?' Quiénes tienen más pendientes:'+lst(pr.map(([n,a])=>esc(n)+' — '+a.length)):''))}
+ if(has('REPETID','DUPLIC')){const d=[...grp(l.filter(r=>r.rn),r=>r.rn)].filter(([,a])=>a.length>1).sort((a,b)=>b[1].length-a[1].length);return A(d.length?`<b>${d.length}</b> nombres de referido aparecen más de una vez:`+lst(d.slice(0,5).map(([,a])=>`${esc(a[0].referido)} — ${a.length} veces, ${new Set(a.map(r=>r.refiere)).size} referidor(es)`)):'No hay referidos repetidos.')}
+ if(has('RAFAGA','MISMO DIA','UN SOLO DIA','EN UN DIA')){const b=[];for(const o of g)for(const[d,c]of o.s.dy)if(c>=2)b.push([o.n,d,c]);b.sort((x,y)=>y[2]-x[2]);return A(b.length?'Referidores con más referidos en un mismo día:'+lst(b.slice(0,5).map(x=>`${esc(x[0])} — ${x[2]} el ${x[1]}`)):'Nadie refirió más de uno en un mismo día.')}
+ if(has('ULTIMOS','ULTIMA SEMANA','RECIENTE','ESTA SEMANA','7 DIAS')){const d=new Date();d.setDate(d.getDate()-7);const r=l.filter(x=>x.t&&x.t>=d),rf=[...grp(r,x=>x.refiere)].sort((a,b)=>b[1].length-a[1].length).slice(0,3);return A(`En los últimos 7 días hay <b>${r.length}</b> referidos de ${new Set(r.map(x=>x.refiere)).size} referidores.`+(r.length?' Los que más: '+rf.map(([n,a])=>esc(n)+' ('+a.length+')').join(', ')+'.':''))}
+ const ct=has('CONTRAT'),dm=(key,lab)=>{const d=[...grp(l,r=>r[key])].filter(([x])=>x!==NA).map(([x,a])=>({n:x,a,s:stats(a)})),f=cvq?o=>o.s.con/o.s.n:ct?o=>o.s.con:o=>o.s.n,a=top(cvq?d.filter(o=>o.s.n>=5):d,f);return A(`<b>${lab} con ${w} ${cvq?'conversión (mín. 5 referidos)':ct?'contratados':'referidos'}:</b>`+lst(a.map(o=>`${esc(o.n)} — ${o.s.n} referidos, ${o.s.con} contratados (${pc(o.s.con,o.s.n)}), ${new Set(o.a.map(r=>r.refiere)).size} referidores`)))};
+ if(has('SUCURSAL'))return dm('sucursal','Sucursal');if(has('PUESTO'))return dm('puesto','Puesto');if(has('CIUDAD'))return dm('ciudad','Ciudad');if(has('ESTATUS'))return dm('estatus','Estatus');
+ if(has(' HORA ',' HORAS '))return A(s.peak==null?'Las fechas no traen hora.':`La hora con más referidos es <b>${hh(s.peak)}</b> (${s.hr[s.peak]} referidos).`);
+ if(has(' MES ',' MESES ')){const ms=[...grp(l.filter(r=>r.t),r=>mk(r.t))].sort((a,b)=>sg*(b[1].length-a[1].length)).slice(0,3);return A(`Meses con ${w} referidos:`+lst(ms.map(([x,a])=>x+' — '+a.length)))}
+ if(has(' DIA ',' DIAS ','SEMANA','QUINCENA')){const i=s.wd.indexOf(Math.max(...s.wd)),dd=[...s.dy].sort((a,b)=>b[1]-a[1])[0],q1=s.dm.slice(0,15).reduce((a,b)=>a+b,0),tt=s.dm.reduce((a,b)=>a+b,0);return A(`El día de la semana con más referidos es <b>${['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'][i]}</b> (${s.wd[i]}, ${pc(s.wd[i],tt)}).`+(dd?` La fecha más fuerte fue ${dd[0]} con ${dd[1]}.`:'')+` Del día 1 al 15 del mes entra el ${pc(q1,tt)}.`)}
+ if(has('UNA SOLA VEZ','1 SOLA VEZ','RECURRENT','REPITEN','SOLO UNA','UNICA VEZ')){const one=g.filter(o=>o.s.n===1).length,rp=g.filter(o=>o.s.n>1);return A(`<b>${one}</b> de ${g.length} referidores (${pc(one,g.length)}) refirieron una sola vez; <b>${rp.length}</b> repiten.`+(rp.length?' Los más constantes:'+lst([...rp].sort((a,b)=>b.s.n-a.s.n).slice(0,5).map(fr)):''))}
+ if(has('CUANTOS','CUANTAS','TOTAL','PROMEDIO','RESUMEN')&&!has('QUIEN','PERSONA'))return A(`<b>${l.length}</b> referidos de <b>${g.length}</b> referidores (promedio ${(l.length/g.length).toFixed(1)} por referidor). Contratados: ${s.con} (${pc(s.con,l.length)}), pagados: ${s.pg} (${pc(s.pg,l.length)}), sin pago: ${l.length-s.pg}.`);
+ if(cvq){const a=top(g.filter(o=>o.s.n>=3),o=>o.s.con/o.s.n);return A(`<b>Referidores con ${w} conversión</b> (mín. 3 referidos):`+lst(a.map(fr)))}
+ if(has('QUIEN','PERSONA','REFERIDOR',' MAS ',' TOP ',' MEJOR')){const f=ct?o=>o.s.con:has('PAGAD')?o=>o.s.pg:o=>o.s.n,lab=ct?'contratados':has('PAGAD')?'pagados':'referidos',a=top(g,f),ties=g.filter(o=>f(o)===f(a[0])).length;return A(`<b>Referidor(es) con ${w} ${lab}:</b>`+lst(a.map(fr))+(k===1&&ties>1?`<div class="mu">Hay empate: ${ties} referidores con ${f(a[0])}.</div>`:''))}
+ return A('No entendí la pregunta. Prueba con: "¿quién ha referido más?", "¿qué sucursal convierte mejor?", "¿cuántos contratados siguen sin pago?", "¿qué día se refiere más?" o escribe el nombre de un referidor.')}
+function srt(k){SORT.d=SORT.k===k?-(SORT.d||-1):-1;SORT.k=k;R()}
+function sel(n){SEL=SEL===n?null:n;R()}
+function refs(l){const g=[...grp(l,r=>r.refiere)].map(([n,a])=>({n,a,s:stats(a)})),sk=SORT.k||'n',dr=SORT.d||-1,F={n:o=>o.s.n,nm:o=>o.n,con:o=>o.s.con,cv:o=>o.s.con/o.s.n,pg:o=>o.s.pg,md:o=>o.s.maxd,la:o=>+(o.s.la||0)}[sk];
+ g.sort((x,y)=>(F(x)>F(y)?1:F(x)<F(y)?-1:0)*dr);const th=(t,k)=>`<th class="${k==='nm'?'l':''}" onclick="srt('${k}')">${t}${sk===k?(dr<0?' ▼':' ▲'):''}</th>`,sl=SEL,L=sl?l.filter(r=>r.refiere===sl):[],sL=stats(L);
+ $('v').innerHTML=kp([[g.length,'Referidores'],[l.length,'Referidos'],[(l.length/g.length).toFixed(1),'Promedio por referidor'],[g[0]?esc([...g].sort((a,b)=>b.s.n-a.s.n)[0].n):'—','Líder']])+
+ `<div class="card"><h4>Ranking de referidores <small>· clic en una fila para ver sus referidos · clic en encabezado para ordenar</small></h4><div class="tw"><table><thead><tr><th>#</th>${th('Referidor','nm')}${th('Total','n')}<th>%</th>${th('Contratados','con')}${th('% conv.','cv')}${th('Pagados','pg')}<th>Por pagar</th><th class="l">Sucursal principal</th><th class="l">Puesto principal</th>${th('Máx. en un día','md')}<th>Primer ref.</th>${th('Último ref.','la')}</tr></thead><tbody>
+ ${g.map((o,i)=>{const su=dom(o.a,'sucursal'),pu=dom(o.a,'puesto');return`<tr class="${sl===o.n?'s':''}" onclick="sel(this.dataset.n)" data-n="${esc(o.n)}" style="cursor:pointer"><td>${i+1}</td><td class="l">${esc(o.n)}</td><td><b>${o.s.n}</b></td><td>${pc(o.s.n,l.length)}</td><td>${o.s.con}</td><td>${pc(o.s.con,o.s.n)}</td><td>${o.s.pg}</td><td>${o.a.filter(r=>r.con&&!r.pg).length}</td><td class="l">${esc(su[0])} (${su[1]})</td><td class="l">${esc(pu[0])} (${pu[1]})</td><td>${o.s.maxd||'—'}</td><td>${fdt(o.s.f)}</td><td>${fdt(o.s.la)}</td></tr>`}).join('')}</tbody></table></div></div>`+
+ (sl?`<h4 style="margin:1.2rem 0 0;font-size:.9rem">DETALLE · ${esc(sl)}</h4>`+kp([[sL.n,'Referidos'],[sL.con,'Contratados'],[pc(sL.con,sL.n),'Conversión'],[sL.pg,'Pagados'],[sL.days||'—','Días con referidos'],[sL.maxd||'—','Máx. en un día']])+`<div class="card"><h4>Sus referidos</h4>${tbl(L,500)}</div>`:'<p class="mu" style="margin-top:.8rem">Selecciona un referidor para ver el detalle de sus referidos.</p>')}
+function rkt(l,k,t,o,ol){const g=[...grp(l,r=>r[k])].map(([n,a])=>({n,a,s:stats(a)})).sort((x,y)=>y.s.n-x.s.n);
+ return`<div class="card"><h4>${t} <small>(${g.length})</small></h4>${tb(['#',NOM[k],'Total','%','Contratados','% conv.','Pagados','Referidores',ol],[1,8],g.map((x,i)=>{const d=dom(x.a,o);return[i+1,esc(x.n),'<b>'+x.s.n+'</b>',pc(x.s.n,l.length),x.s.con,pc(x.s.con,x.s.n),x.s.pg,new Set(x.a.map(r=>r.refiere)).size,esc(d[0])+' ('+d[1]+')']}))}</div>`}
+function sp(l){$('v').innerHTML=rkt(l,'sucursal','Ranking por sucursal','puesto','Puesto principal')+rkt(l,'puesto','Ranking por puesto','sucursal','Sucursal principal')+mtx(l,'sucursal','estatus','Sucursal × Estatus',25)+mtx(l,'puesto','estatus','Puesto × Estatus',25)+mtx(l,'sucursal','puesto','Sucursal × Puesto',25,10)}
+function diagH(){const D=DIAG;if(!D)return'';const T=r=>'<table>'+r.map(x=>'<tr><td>'+x[0]+'</td><td><b>'+x[1]+'</b></td></tr>').join('')+'</table>',R_=D.referidos,P=D.pagos,X=D.cruce,F=D.final,N=X.foliosEnPagosNoEnReferidos;
+ let h='<h4>Hoja Referidos</h4>'+T([['Filas con datos en la hoja',R_.filasHoja],['Con folio (las que muestra el dashboard)',R_.conFolio],['Sin folio (NO se muestran)',R_.sinFolioExcluidas>0?'<span class="bad">'+R_.sinFolioExcluidas+'</span>':0],['Folios repetidos',R_.foliosDuplicados>0?'<span class="bad">'+R_.foliosDuplicados+'</span>':0]]);
+ h+='<h4>Columnas detectadas en Referidos</h4>'+T(D.columnas.map(c=>[esc(c.campo),c.encabezado?esc(c.encabezado):'<span class="bad">❌ no encontrada</span>']));
+ h+='<h4>Hoja de pagos</h4>'+T([['Estado',P.hojaOk?'✅ encontrada':'<span class="bad">❌ '+esc(P.aviso||'no encontrada')+'</span>'],['Fila de encabezados',P.filaEnc||'—'],['Columna folio',esc(P.colFolio||'—')],['Columna nombre',esc(P.colNombre||'—')],['Columna M (pago)',esc(P.colM||'—')],['Filas leídas',P.filas],['Filas pagadas',P.pagadas],['Pagadas sin folio',P.sinFolioPagadas]]);
+ h+='<h4>Cruce Referidos ↔ Pagos</h4>'+T([['Relacionados por folio',X.porFolio],['Relacionados por nombre exacto',X.porNombre],['Relacionados por nombre aproximado',X.porNombreAprox],['Sin fila en pagos (= no pagado)',X.sinCoincidencia],['Folios en pagos que NO existen en Referidos',N.total>0?'<span class="bad">'+N.total+' ('+N.pagados+' pagados)</span>':0]]);
+ if(N.muestra.length)h+='<p class="mu">Ejemplos: '+esc(N.muestra.join(', '))+(N.total>N.muestra.length?'…':'')+'</p>';
+ if(X.muestraSinCoincidencia&&X.muestraSinCoincidencia.length)h+='<p class="mu">Sin coincidencia, ejemplos: '+esc(X.muestraSinCoincidencia.join(' | '))+'</p>';
+ if(P.columnas&&P.columnas.length)h+='<h4>Columnas de la hoja de pagos</h4><p class="mu">'+P.columnas.map(c=>'<b>'+esc(c.col)+'</b> '+esc(c.enc)).join(' · ')+'</p>';
+ h+='<h4>Valores de la columna M y cómo se clasifican</h4><table>'+P.valores.map(v=>'<tr><td>'+esc(v.valor)+'</td><td><b>'+v.n+'</b></td><td>'+(v.pagado?'✅ pagado':'— no pagado')+'</td></tr>').join('')+'</table>';
+ h+='<h4>Resultado en el dashboard</h4>'+T([['Filas totales',F.total],['Pagados',F.pagados+' ('+F.pagadosConFolio+' con folio + '+F.sinFolio+' sin folio)']]);
+ return`<details class="card"><summary style="cursor:pointer;font-weight:700">🔍 Verificación contra el Sheets (para comparar números)</summary><div class="dg">${h}</div></details>`}
+function pag(l,s){const a=l.filter(r=>r.con&&!r.pg),b=l.filter(r=>r.pg&&!r.con&&r.tipo!=='SIN FOLIO');
+ $('v').innerHTML=kp([[s.pg,'Pagados'],[l.length-s.pg,'Por pagar'],[a.length,'Contratados sin pago'],[b.length,'Pagados sin estatus contratado']])+`<div class="gr">${brk(a,'refiere','Contratados sin pago · por referidor')}${brk(a,'sucursal','Contratados sin pago · por sucursal')}</div>`+
+ `<div class="card"><h4>Contratados sin pago <small>(${a.length})</small></h4>${a.length?tbl(a,200):'<p class="mu">Sin pendientes</p>'}</div><div class="card"><h4>Pagados sin estatus contratado <small>(${b.length})</small></h4>${b.length?tbl(b,200):'<p class="mu">Sin casos</p>'}</div>`+diagH()}
+function det(l){$('v').innerHTML=`<div class="card"><h4>Detalle <small>(${l.length}${l.length>1000?' · se muestran los 1000 más recientes':''})</small></h4>${tbl(l,1000)}</div>`}
+function csv(){const cols=['folio','fecha','tipo','estatus','refiere','referido','sucursal','puesto','estado','ciudad','formato','folio_vacante','pagado','pago_valor'],q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"',a=document.createElement('a');
+ a.href=URL.createObjectURL(new Blob(['\ufeff'+[cols.join(','),...FIL.map(r=>cols.map(c=>q(r[c])).join(','))].join('\n')],{type:'text/csv;charset=utf-8'}));a.download='referidos_'+ymd(new Date())+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+const NT={res:'Resumen',pat:'Análisis',ref:'Referidores',sp:'Sucursal · Puesto',pag:'Pagos'};
+async function pdf(todas){const bs=document.querySelectorAll('.pb'),btn=bs[todas?1:0],tx=btn.textContent,tab0=TAB,th0=document.documentElement.dataset.theme;bs.forEach(b=>b.disabled=true);
+ try{const{jsPDF}=window.jspdf,doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'}),M=10,W=277,UH=190;
+ document.documentElement.dataset.theme='light';document.body.classList.add('pdf');let first=true;
+ for(const t of(todas?Object.keys(NT):[NT[tab0]?tab0:'res'])){TAB=t;R();btn.textContent='Generando… '+NT[t];await new Promise(r=>setTimeout(r,250));
+  if(!first)doc.addPage();first=false;
+  const l=getD(),f=[$('fd').value&&'Desde '+$('fd').value,$('fh').value&&'Hasta '+$('fh').value,$('ft').value&&'Tipo: '+$('ft').value,$('fe').value&&'Estatus: '+$('fe').value,$('fs').value&&'Sucursal: '+$('fs').value,$('fu').value&&'Puesto: '+$('fu').value].filter(Boolean).join(' · ')||'Sin filtros';
+  doc.setFont('helvetica','bold');doc.setFontSize(15);doc.text('Dashboard de Referidos · '+NT[t],M,14);
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text(f+' · '+l.length+' referidos · Generado '+new Date().toLocaleString('es-MX'),M,19);
+  let y=24;const v=$('v'),k=W/v.clientWidth;
+  const put=(cv,h)=>{if(y+h>200){doc.addPage();y=M}doc.addImage(cv.toDataURL('image/jpeg',.92),'JPEG',M,y,Math.min(W,cv.width/1.6*k),h);y+=h+3};
+  for(const el of[...v.children]){if(!el.offsetHeight)continue;const c=await html2canvas(el,{scale:1.6,backgroundColor:'#ffffff',logging:false}),h=el.offsetHeight*k;
+   if(h<=UH)put(c,h);else{const sh=Math.floor(c.height*UH/h);for(let o=0;o<c.height;o+=sh){const hg=Math.min(sh,c.height-o),q=document.createElement('canvas');q.width=c.width;q.height=hg;q.getContext('2d').drawImage(c,0,o,c.width,hg,0,0,c.width,hg);put(q,hg*h/c.height)}}}}
+ doc.save('dashboard_referidos_'+new Date().toISOString().slice(0,10)+'.pdf')}
+ catch(e){alert('No se pudo generar el PDF: '+e.message)}
+ finally{document.body.classList.remove('pdf');document.documentElement.dataset.theme=th0;TAB=tab0;R();btn.textContent=tx;bs.forEach(b=>b.disabled=false)}}
+cargar();setInterval(()=>{if(!document.hidden)cargar(true)},300000);
+</script>
+</body>
+</html>
